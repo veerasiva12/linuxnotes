@@ -1,0 +1,24 @@
+Take server details
+LINE="###############################################################################################################";sudo cat /proc/sys/kernel/hostname > /root/details_`date +%d%b%Y` ; sudo echo $LINE >> /root/details_`date +%d%b%Y` ; sudo /sbin/ifconfig -a >> /root/details_`date +%d%b%Y` ; sudo echo $LINE >> /root/details_`date +%d%b%Y`;sudo cat /proc/net/bonding/bond0 >> /root/details_`date +%d%b%Y`;sudo echo $LINE >> /root/details_`date +%d%b%Y` ;sudo dmidecode -t system >> /root/details_`date +%d%b%Y` ; sudo echo $LINE >> /root/details_`date +%d%b%Y` ; sudo df -h >> /root/details_`date +%d%b%Y` ; sudo echo $LINE >> /root/details_`date +%d%b%Y` ; sudo free -g >> /root/details_`date +%d%b%Y` ;sudo echo $LINE >> /root/details_`date +%d%b%Y` ;sudo netstat -ntlp >> /root/details_`date +%d%b%Y` ;sudo echo $LINE >> /root/details_`date +%d%b%Y` ; DOCK_CONT=`sudo docker ps -q`; for i in $DOCK_CONT; do echo "docker ports : " >> /root/details_`date +%d%b%Y`; sudo docker port $i >> /root/details_`date +%d%b%Y`; done; sudo echo $LINE >> /root/details_`date +%d%b%Y` ; screen -ls >> /root/details_`date +%d%b%Y` ; sudo echo $LINE >> /root/details_`date +%d%b%Y` ; sudo multipath -ll >> /root/details_`date +%d%b%Y` ;sudo echo $LINE >> /root/details_`date +%d%b%Y` ;cat /sys/class/fc_host/*/port_name >> /root/details_`date +%d%b%Y`; sudo echo $LINE >> /root/details_`date +%d%b%Y` ;sudo cat /etc/fstab >> /root/details_`date +%d%b%Y` ;sudo echo $LINE >> /root/details_`date +%d%b%Y` ; sudo mysqld_multi report >> /root/details_`date +%d%b%Y` ;sudo echo $LINE >> /root/details_`date +%d%b%Y` ; sudo ps auxf >> /root/details_`date +%d%b%Y` ;sudo echo $LINE >> /root/details_`date +%d%b%Y` ;sudo mount >> /root/details_`date +%d%b%Y` ; echo "history from root before activity" >> /root/details_history_`date +%d%b%Y`; sudo echo $LINE >> /root/details_history_`date +%d%b%Y`; history >> /root/details_history_`date +%d%b%Y`;
+
+############## Find commonds ##############
+find /var/lib/SQL -type f -size +1G | xargs du -hsc | sort -rh
+
+######################Varnish cache clear#################
+cd /scripts
+
+ls -lrth | grep -i varnish
+
+sh clear_all_cache_varnish.sh
+
+################## table size #####################
+select (data_length+index_length)/1024/1024/1024 from information_schema.TABLES where table_name='temp_vn_answered_calls_remote2' ;
+
+################# macth text files ###############
+comm -2 -3 <( sort cron_list ) <( sort cron_list5 ) > cron_list6
+
+# ######check process time###########
+ps -eo pid,etime,cmd | grep 'processname or pid'
+
+
+

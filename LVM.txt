@@ -1,0 +1,77 @@
+LVM
+https://www.linuxhelp.com/how-to-manage-and-create-lvm-on-centos-7
+
+https://www.youtube.com/watch?v=Eu1WrVjzRy8
+
+Steps
+To Create new partition Press : n
+Choose primary partition use : p
+Choose which number of partition to be selected to create the primary partition.
+Press 1 if any other disk available.
+Change the type using : t
+Type 8e to change the partition type to Linux LVM: 8e
+Use p to print the create partition ( here we have not used the option).
+Press w to write the changes : w
+
+Get storage
+
+Create new partition using fdisk
+
+$ fdisk /dev/sdb
+
+n —> new
+
+p —> primary
+
+Fist sector —> enter
+
+Allocate required size
+
+t —> type of fs
+W —-> save
+
+Partprobe —-> refresh disk
+Now we can see sdb1 under sdb using $ lsblk
+
+Lets create physical volume
+
+$ pvcreate /dev/sdb1
+
+Lets create volume group with name
+
+$ vgcreate test /dev/sdb1
+
+Lets create logical volume
+
+$ lvcreate
+lvcreate -n -L
+lvcreate -n rebel -L +10G test
+
+Check lsblk then u can find lvm new partition
+
+Formate new partition with required file system
+
+Mkfs.ext4 /dev/test/rebel
+
+Then find blkid and create new directory and make entry in /etc/fstab
+
+$ mkdir prashanth
+Check blk id of new partition
+$blkid
+Make entry in fstab
+
+Ex: uuid=1234566 /prashanth ext4 defaults 0 0
+
+Then mount new partition
+mount -a
+
+df -h we can see
+
+/prashanth
+
+Unmounting
+—-> revers
+
+Resize LVM
+
+https://www.tecmint.com/extend-and-reduce-lvms-in-linux/

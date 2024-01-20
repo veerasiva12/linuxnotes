@@ -1,0 +1,344 @@
+
+Day to day task execution guide
+February 22, 2016 by Anu Sundaram
+
+Day to day task execution guide
+
+Table Transfer
+
+There will be requests from Database team to transfer a MySQL table from one server to another. These requests come to our team as they do not have access to the servers. Usually, the requestor will give you the following.
+
+    Source Server IP
+
+    Source Database name
+
+    Source Table name
+
+    Destination Server IP
+
+    Destination Database name
+
+So, we need to login to the source server and take a dump of the mentioned table from the mentioned database into a file. We use “mysqldump” command to perform the action of taking dump of a table.
+
+Get idea of size of the table to be exported, make sure that wherever you are exporting file, sufficient disk-space is available.
+
+#mysqldump -uroot database_name table_name > /tmp/table_name_`date +%d%m%y`.sql
+
+Wherever required please add <SERVER_IP_SHORTCODE> to the sql/out file name. i.e. table_name_`date +%d%m%y`_1235.sql
+
+Now that you have the .sql file, you have to transfer the file from the source server to the destination server ip. To copy a file from one server to another, we use the “scp” command. If the file size of /tmp/table_name_`date +%d%m%y`.sql is huge, we zip (compress) the file to reduce the size to save network from chocking. We use “gzip” command to zip a file.
+
+#cd /tmp && gzip -f /tmp/table_name_`date +%d%m%y`.sql
+
+Once the file is zipped, the file will get an extension “.gz”. So, the filename is “/tmp/table_name_`date +%d%m%y`.sql.gz”
+
+#scp /tmp/table_name_`date +%d%m%y`.sql.gz user@destination_ip:/tmp/
+
+Now the file has been copied to the destination server. You have to login to the destination server and input this .sql file to mysql. We use “mysql” command to perform this. But before doing this, we have to unzip the file to bring it back to original size. We use the alternative command “gunzip” to uncompress.
+
+#cd /tmp && gunzip -f /tmp/table_name_`date +%d%m%y`.sql.gz
+
+This will create the original file meaning the .gz extension will be removed from the output.
+
+Once this is done, restore the table to mysql.
+
+#mysql destination_database < /tmp/table_name_`date +%d%m%y`.sql
+
+User Access:
+
+Mysql has user and host based authentication. So when someone tries to login to MySQL server, it not only checks the username but also the IP of the user from where he is trying to login. This is a part of the security provided by MySQL. So we need to provide access to the users based on the user name and also the system IP from where they will connect to the MySQL server. Also MySQL has authorization – which means that user will be authorized to run only few SQL queries based on the authorization access they have. This is what we call as “GRANTS”. So knowing what grants the user requires is also important. When you provide a grant to a user when the user is not present in MySQL, by default the user will be created. Below is the command that we use to provide grants.
+
+#grant PRIVILEGES on DBNAME.TABLENAME to ‘USERNAME’@’USERIPADDR’ identified by ‘PASSWORD’;
+
+PRIVILEGES – These are the permissions that the user will be given.
+
+DBNAME – Database name on which the user wants access. (* for all databases)
+
+TABLENAME – Table name (* for all tables)
+
+USERNAME – The username of the user with which he will connect to MySQL
+
+USERIPADDR – The IP Address of the User’s system from where he will connect.
+
+PASSWORD – The password that user uses to authenticate to MySQL.
+
+Examples:
+
+#grant all on db_name.* to ‘user1’@’172.29.87.107’ identified by ‘password’; 
+
+The above MySQL query will create user1 if not already present and grants him all privileges on all databases and all tables.
+
+# grant select,update on ‘db_test’.* to ‘user2’@’172.29.87.108’ identified by ‘password’;
+
+The above MySQL query will create user2 if not already present and grants him permissions only to run select and update queries only on ‘db_test’ database. This user will not be able to run any other queries like insert or delete on the database. Also he will not be able to run select or update on any other database as the user has grants only to run the queries on db_test database.
+
+* Always remember to issue “flush privileges;” query in MySQL so the MySQL will refresh the user information and the new user will be able to connect and use MySQL.
+
+* Usually MySQL runs on TCP Port # 3306. If any end user complains that he is not able to access even after granting the permissions in MySQL and flushing the privileges, they will need to get the port opened from Networks team.
+
+– To check the existing grants for a user, use the below query
+
+# show grants for ‘user’@’ipaddr’;
+
+– To update the password of a user,
+
+# set password for ‘user’@’ipaddr’ = password(‘NEW_PASSWORD’);
+
+– To remove a user completely
+
+# drop user ‘user’@’ipaddr’;
+
+EXECUTE QUERIES:
+
+DB Team will give some MySQL queries to be run on multiple servers at a time.
+
+You will need to login to multiple servers using cssh and login to MySQL and run the queries.
+
+Copy File from Server to Local or Vice-Versa:
+
+Sometimes there will be requests to copy the text files from local machine to server or from server to local machine. MySQL will be able to read and write to /tmp. To copy a file from local machine to the server, you just have to login to the local machine. Credentials will be given by the user. The file location will also be given. You just need to run the scp command to copy the file.
+
+#scp filename server_user@server_ip:/tmp
+
+This will copy the file to /tmp location of the server. For MySQL to be able to read the file, we need to change the ownership and group of the file to mysql:mysql. We use “chown” command to do this. Login to the server and run the below command.
+
+# chown mysql:mysql /tmp/filename
+
+Same procedure can be followed to copy the file from server to local machine. But you login to the server first and destination will be local machine.
+
+Solving Replication Errors:
+
+MySQL replication (Master-Slave Architecture) has been set up almost everywhere. So it’s our responsibility that the slave is in sync with the master. Due to some query issues on the master, the replication on to the slave will break and we need to fix it.
+
+To check the status of the slave, we use the below query.
+
+#show slave status\G
+
+If there is any error saying “Lock wait time out exceeded”, it means the executing query on slave was waiting. In this case, you simply stop and start the slave.
+
+#stop slave; start slave;
+
+If there is any error saying “Got Fatal Error…”, check with the senior members in the team.
+
+If there is any other error saying “Table doesn’t exist” or any other error showing the query, first thing to be done is to inform the database team. This is because they will check what has caused the error. And with their confirmation, we skip the error by the below query.
+
+#stop slave; set global sql_slave_skip_counter=1; start slave;
+
+If you are in night shift and such errors occur, db team will not be available. In such cases, take a screen shot of the error and drop an email to db team and skip the error.
+
+Other Activities:
+
+Samba Access:
+
+Samba is the file sharing technique that we use as a standard to provide access to the code related files on the server to the developer. So, for any directory the access has to be given, it will be created as a port in the config. It’s nothing but a name for a directory to identify. It is also the name with which the end user will access. Most of the directories are predefined in the configuration file. The request will mostly to allow a computer to be able to access. So the IP address is important and it has to be present in the particular port name. Typically, the configuration file location is ‘/etc/samba/smb.conf’
+
+To edit the file, use vim.
+
+#vim /etc/samba/smb.conf
+
+Find the port for which the user need access and append the ip address in the host_allow section.
+
+For the changes to take affect, the samba service has to be reloaded.
+
+# service smb reload
+
+SVN Updates:
+
+SVN is the file version controlling system that we use for version-ing of the files. It stores all the changes to the files as long as they are under it. So all the code of the developers for various components in just dial are under various SVN repositories. Meaning the code of the components that are used to display the complete function of the justdial websites (web/mobile) is stored in the multiple SVN repositories. So, when we are doing an SVN update, we are actually updating the code that will display the website.
+
+The link for SVN updates is already present in our wiki.
+
+http://172.29.64.66/svn-updates/
+
+Most of the updating code has been put in a script. We just need to run it, And the above link shows for all the components, what are the main servers from where it is being served.
+
+SVN Repo Access:
+
+SVN Server is on 172.29.64.66. Code is stored in SVN repo’s. A repo is nothing but like a folder. So, when a developer needs access to be able to checkout or commit the code, they need to have access to do it. This is maintained in the file ‘/etc/subversion/authz’. You need to search for the repo and add the developer name in the existing list. Based on read or write or both, access is given.
+
+#vim /etc/subversion/authz
+
+#developername = rw (r – read, w – write)
+
+Sandbox Creation:
+
+Sandbox is the environment that is provided to the developers to test their code.
+
+There are two different servers for it. For every developer, there will be a sandbox created.
+
+As most of work is related to web, there should be a link for the developers to test what they are doing. So, sandbox is like a development environment.
+
+    Mumbai – 172.29.64.64 – username.jdsoftware.com
+
+    Bangalore – 172.29.86.27 – username.blrsoftware.com
+
+To create a new user in sandbox, you can follow the below link.
+
+http://172.29.64.66/sandbox-creation-for-new-user/
+
+Basically, the sandbox usernames and their details are stored in database. Instead of you firing all the queries, there is a simple script that will do the things for you. Once the user is created, you need to make changes in the httpd configuration so that the new user will have a URL to test his code.
+
+Server Hardening:
+
+Server hardening means making changes to the server to get the desired state of the system to meet our requirements. This could be the packages, basic services, configuration files, users, passwords, sudo access, registering the system to satellite etc.
+
+Basically this is all scripted. There is a script which we download and run the script. The script is interactive. So it just asks you to press ‘yes’ or ‘no’ based on the requirement.
+
+We just need to download this to the server and run it. Run the below command to download the script.
+
+# wget http://172.29.0.123/download/rhel6_configure.sh
+
+Once it’s done, run the configure script.
+
+# ./rhel6_configure.sh
+
+We do server hardening only for the new servers.
+
+Scripts / Cron / Screen:
+
+Based on the tasks, most of them are automated. Automation meaning there is a script written and it runs using cron as a cronjob. On any server, there will be multiple scripts running in the cron.
+
+Ideally, all the scripts are located in /scripts directory on all the servers. Scripts that are used to schedule should not run from any other location on the server.
+
+For any automated tasks, the script is set as a cron job. A log file should be present capturing the output and error using 2>&1 at the end.
+
+Set a cron:
+
+# * * * * * command to execute
+
+ # │ │ │ │ │
+ # │ │ │ │ │
+ # │ │ │ │ └───── day of week (0 - 6) (0 to 6 are Sunday to Saturday, or use names; 7 is Sunday, the same as 0)
+ # │ │ │ └────────── month (1 - 12)
+ # │ │ └─────────────── day of month (1 - 31)
+ # │ └──────────────────── hour (0 - 23)
+ # └───────────────────────── min (0 - 59)
+
+Example:
+
+Cron job to run at 2 AM everyday.
+
+#00 02 * * * /scripts/scrpitname > /var/log/daily_log/scriptname.log 2>&1
+
+– There will be requests to change the timing of the cron. You can change the time based on the user’s request.
+
+Screen:
+
+Screen is the utility that provides virtual terminal. The same terminal can be shared.
+
+Any process that takes long time to execute, we run it on a screen so that the next shift guy can continue.
+
+To list the current screens:
+
+screen -ls
+
+To connect to a running screen:
+
+screen -r screen_name
+
+To detach from a screen:
+
+Ctrl + A, D
+
+To create a new screen:
+
+screen -S screen_name
+
+Note: Never hit Ctrl + D while you are on a screen. It will be terminated.
+
+CRASHED TABLES
+
+select table_schema,table_name from information_schema.tables where index_length is NULL or data_length is NULL; (Will show the list of crashed tables)
+
+To repair a table:
+
+repair table tablename (repairs the table)
+
+Important : Tables on master are not supposed to be repaired*
+
+IP CHANGE
+
+Steps to be followed while changing IP:
+
+1) Deactivate the nagios alerts.
+
+2) Stop network service.
+
+/etc/init.d/network stop (Will stop the service)
+
+3) Edit the IP in /etc/sysconfig/network-scripts/ifcfg-eth*.
+
+Vim /etc/sysconfig/network-scripts/ifcfg-eth*
+
+4) Change IP in /etc/hosts/.
+
+Vim /etc/hosts (Will open the hosts file for editing)
+
+5) Change hostname.
+
+Hostname newhostname (where ‘newhostname’ is the hostname you want to set)
+
+6) Restart network service.
+
+/etc/init.d/network restart (Will restart the network)
+
+NGINX CACHE CLEAR
+
+How to clear nginx cache :
+
+1) Goto the server.
+
+2) cd /var/www/cache/
+
+3) ll (long list)
+
+4) nginx -t (check the nginx configuration)
+
+5) rm -rf * (confirm and then do this step)
+
+6) /etc/init.d/nginx reload (reload the service)
+
+SERVER SHUTDOWN
+
+Steps to be completed before a server is shut-down :
+
+1) cat /proc/sys/kernel/hostname > /root/details_`date +%d%m%Y`;echo $skip >> /root/details_`date +%d%m%Y`; /sbin/ifconfig -a >> /root/details_`date +%d%m%Y`; echo $skip >> /root/details_`date +%d%m%Y`; dmidecode -t system >> /root/details_`date +%d%m%Y`; echo $skip >> /root/details_`date +%d%m%Y` ; df -h >> /root/details_`date +%d%m%Y`; echo $skip >> /root/details_`date +%d%m%Y` ; netstat -ntlp >> /root/details_`date +%d%m%Y` ; echo $skip >> /root/details_`date +%d%m%Y` ; multipath -ll >> /root/details_`date +%d%m%Y`; echo $skip >> /root/details_`date +%d%m%Y` ; cat /etc/fstab >> /root/details_`date +%d%m%Y`; echo $skip >> /root/details_`date +%d%m%Y`; mysqld_multi report >> /root/details_`date +%d%m%Y`; echo $skip >> /root/details_`date +%d%m%Y`; ps auxf >> /root/details_`date +%d%m%Y` ; echo $skip >> /root/details_`date +%d%m%Y`; mount >> /root/details_`date +%d%m%Y`; echo $skip >> /root/details_`date +%d%m%Y` (Saves all the configurations, IP details, system details, running processes, partition details, lun details to a new file in ‘/’ with current date as name)
+
+2) Check the services that are currently running in the server –
+
+netstat -ntpl (Displays all listening ports and services)
+
+or
+
+netstat -antulp | grep -i listen (Displays all listening ports and services)
+
+ps -ef | grep mysqld
+
+3) Show slave status \G
+
+show slave hosts \G
+
+4) Check the lag.
+
+sudo mysqladmin flush-tables && sudo mysqladmin flush-tables && sudo mysqladmin flush-tables && sudo mysqladmin flush-tables && sudo /etc/init.d/mysql stop
+
+/etc/init.d/httpd (check status and then stop the services)
+
+/etc/init.d/search
+
+/etc/init.d/multipathd
+
+/etc/init.d/crond
+
+5) deactivate nagios alerts.
+
+6) Shut down the server.
+
+RSYNC
+
+rsync -avrp * sachin@192.168.1.64:/developement/port_80/javedahmad/new_website/ (Go to particular folder and rsync it)
+
+rsync -avrp –exclude “.svn” * 192.168.1.64:/developement/port_80/bhavin/newwap/ (copy all contents except svn) where ‘*’ is current working directory and same is being synced.
+
+
+

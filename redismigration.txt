@@ -1,0 +1,48 @@
+Please find below POA of 192.168.42.221 server migration.
+
+1) Take Details of cluster nodes and Note Mater and slave ID's of 192.168.42.221
+# redis-cli -h 192.168.42.221 -a 'JdM@rtsErvice5' -c cluster nodes
+
+2) Take Details of Master and slave keys for 192.168.42.221 and stop Redis on 192.168.42.221
+# service redis stop
+
+NOTE: if 192.168.42.221 is master , wait untile slave become master and all Keys are replicated
+
+after replication is completed , Do forget cluster ID of 192.168.42.221 from all the nodes
+login to 192.168.42.237
+
+# for i in `redis-cli -h 192.168.42.237 -a 'JdM@rtsErvice5' -c cluster nodes | grep -i '192.168' | awk '{print $2}' | cut -f1 -d:` ; do echo $i ; redis-cli -h $i -a 'W365erv!ce5' -c CLUSTER FORGET "please enter cluster ID of 192.168.42.221" ; done
+
+3) copy Below files to new server
+/etc/redis/redis.conf
+/opt/.rediscred
+/opt/sysmon
+
+4) Take free IP from System team and perform IP swap
+
+5) set Hostname
+hostnamectl set-hostname 42-221-IDC.justdial.com
+hostnamectl set-hostname "42-221-IDC.justdial.com" --pretty
+hostnamectl set-hostname 42-221-IDC.justdial.com --static
+hostnamectl set-hostname 42-221-IDC.justdial.com --transient
+
+6)add below lines on redis service file under service block and start redis on new server (now it will start as standalone master)
+TimeoutStopSec=1200
+TimeoutStartSec=1200
+LimitNOFILE=65535
+
+7) Add 192.168.42.221 server to cluster
+login to slave / master of 192.168.42.221
+#redis-cli -h 192.168.42.237 -a 'JdM@rtsErvice5' info (note slave/master ip of 42.221 )
+
+login to slave / master of 192.168.42.221
+join node to cluster
+> cluster meet 192.168.42.221 6379
+
+8) on 192.168.42.221
+
+replicate keys
+
+> cluster replicate (enter master/slave id of 42.221)
+
+Wait until server gets replicated

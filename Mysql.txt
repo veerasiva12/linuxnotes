@@ -1,0 +1,96 @@
+Mysql
+How to Install MySQL 5.7 on Linux CentOS
+Step 1 - Add New Repository
+
+yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
+
+Step 2 - Install MySQL 5.7
+
+yum -y install mysql-community-server
+
+Step 3 - Start MySQL and Enable Start at Boot Time
+
+systemctl start mysqld
+systemctl enable mysqld
+
+Step 4 - Configure the MySQL Root Password
+
+grep 'temporary' /var/log/mysqld.log
+
+mysql -u root -p
+TYPE DEFAULT PASSWORD
+
+change user pass:
+
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Prashanth@123';
+
+flush privileges;
+
+How to Configure MySQL Master-Slave Replication on CentOS 7
+Master IP =192.168.1.101
+slave IP = 192.168.1.102
+
+Configure the Master Server
+Set the MySQL server to listen on the private IP .
+Set a unique server ID.
+Enable the binary logging.
+
+open the MySQL configuration file and add the following lines in the [mysqld] section:
+
+[mysqld]
+
+bind-address = 192.168.1.101
+server-id = 1106
+log_bin = mysql-bin
+
+then restart mysqld
+
+systemctl restart mysqld
+
+Configure the Slave Server
+Like for the master server above, we’ll make the following changes to the slave server:
+
+Set the MySQL server to listen on the private IP
+Set a unique server ID
+Enable the binary logging
+
+vim /etc/my.cnf
+
+[mysqld]
+
+bind-address = 192.168.1.107
+server-id = 1107
+log_bin = mysql-bin
+
+then restart mysqld
+
+systemctl restart mysqld
+ON MASTER server : create the replica user and grant the REPLICATION SLAVE privilege to the user
+mysql> CREATE USER 'repl'@'IP' IDENTIFIED BY 'password';
+Query OK, 0 rows affected (1.53 sec)
+
+mysql>
+
+mysql> GRANT REPLICATION SLAVE ON *.* TO 'repl'@'IP'; flush privileges;
+Query OK, 0 rows affected (1.48 sec)
+
+# take output of mastser status from master sever and note
+
+mysql> SHOW MASTER STATUS\G
+*************************** 1. row ***************************
+File: mysql-bin.000001
+Position: 619
+Binlog_Do_DB:
+Binlog_Ignore_DB:
+Executed_Gtid_Set:
+1 row in set (0.00 sec)
+
+mysql>
+
+ON SLAVE server : attach slave to master using mastser status out
+First, stop the slave threads:
+STOP SLAVE;
+
+######then execute below and make sure of ip and pass and log_pos and log_file
+
+mysql> CHANGE MASTER TO

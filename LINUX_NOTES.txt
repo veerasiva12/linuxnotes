@@ -1,0 +1,1691 @@
+									LINUX NOTES 
+
+samba access
+
+adduser rahulmondal
+history
+passwd rahulmondal
+history | grep smbpass
+smbpasswd -a rahulmondal
+vim /etc/samba/smb.conf
+service smb status
+service smb reload
+service smb status
+history | grep chmod
+ll /home/rahulmondal/
+ll -ld /home/rahulmondal/
+chmod 755 /home/rahulmondal/
+ll -ld /home/rahulmondal/
+ll /home/rahulmondal/
+
+
+mysqld_multi report it will check all mysql  port services 
+
+iostat -dkxtN 1
+
+cat /var/log/messages | egrep -i 'mem|OOM|reboot|stop|err'  to cehck the os logs
+
+we can check it is lb is in production are not
+
+curl http://192.168.13.102:920/lb_module-cli?ip=41.240
+
+
+iostatics
+sudo iostat -xtdN 1 sdb
+
+
+watch 'sudo mysql -e "show slave status\G" | grep "Seconds_Behind_Master"'
+
+#######################SCRIPTS###########################################################################################################################
+
+create screen ------------sudo screen -S screen_name
+
+sudo -i
+
+cd /scripts and grep script
+
+ll -lrth | grep -i all_india_process_SP.sh     .....................greping
+
+sh /scripts/all_india_process_SP.sh > /var/log/daily_log/all_india_process_SP.log 2>&1         .............on server screen
+
+2>&1 Lets see how this works :
+
+2 – standard errors
+
+> – redirect to
+
+& – following file descriptor
+
+1 – standard output then
+
+>  redirects to file 
+
+The final setup will be :
+
+2 – standard errors redirects to standard output 
+
+1 – standard output redirects to file.
+
+cat  /var/log/daily_log/product_change_data.log   --------- output of this file(script execution output)
+
+####################################################################################################################################
+
+ABOUT NAGIOS CHECKS IN THE SERVER:
+
+hemanth@8735:~$ h 43 217
+[bhavesh@43-217-IDC ~]$ cat /etc/nagios/nrpe.cfg | grep nginx
+command[check_bmw_mount]=/usr/lib64/nagios/plugins/check_disk -w 20% -c 10% -u GB -p /var/log/nginx
+command[check_nginx]=sudo /usr/lib64/nagios/plugins/check_nginx_status.pl -H 192.168.43.217 -w 500,500,500 -c 600,600,600
+
+[bhavesh@43-217-IDC ~]$ sudo /usr/lib64/nagios/plugins/check_nginx_status.pl -H 192.168.43.217 -w 500,500,500 -c 600,600,600
+NGINX OK -  0.052 sec. response time, Active: 5 (Writing: 4 Reading: 0 Waiting: 1) ReqPerSec: 26.829 ConnPerSec: 26.714 
+ReqPerConn: 2.097|Writing=4;;;; Reading=0;;;; Waiting=1;;;; Active=5;;;; ReqPerSec=26.828571;;;; ConnPerSec=26.714286;;;; ReqPerConn=2.097415;;;;
+
+##################################################################################################################################################################
+
+ABOUT CPU UTILIZATION:
+
+1)
+192.168.20.253 is floating ip of 192.168.20.251 (LB1 Self Ip) and / OR 192.168.20.252 (LB2 Self Ip)
+
+Same as
+
+192.168.8.253 is floating ip of 192.168.8.251 (LB1 Self Ip) and / OR 192.168.8.252 (LB2 Self Ip)
+
+These floating ip active only through single self ip .
+
+2) only cpu of 20.253 and 8.253 imp as floating ipss
+
+##################################################################################################################################################################################
+
+FOR FINDING ERROR LOGS IN WEBSITE LIKE 5XX AND 4XX ERRORS:
+
+zcat /var/log/nginx/graph.access.log-202004301545 | grep 'HTTP/1.1" 504'
+
+Zcat /var/log/nginx/graph.access.log-202004301545 | grep 'HTTP/1.1" 5XX'
+Zcat /var/log/nginx/graph.access.log-(error particular time) | grep 'HTTP/1.1" 4XX'
+
+################################################################### Linux cmd ##########################################################################################################
+
+1) crontab search -> $crontab -l | grep -i crontab name
+
+2) File transfer one server to another server ->  scp  file_name.txt source@192.168.x.x:/path
+
+3) Server password -> ju5tD1@lcromA
+
+4) create tar file -> tar -czvf filename.tar.* / tar -cvf archive-name.tar ---> tar -cvzf filename.tar.gz  filename
+
+   create untar file -> tar -zcvf filename.tar.gz / tar -xvf archive-name.tar
+
+5) show all the function in server -> netstat -tulnp
+
+6) Nginx Reload -> sudo service nginx reload
+
+7) disk usage space -> du -sh file name, df -H, df -H
+
+8) multiple server login using cssh -> cssh 192.168.{39,43,47,44,45,48,46,35,17}.171 -l username
+
+9) selected time print in crontab file -> awk '$2<10{next};1;$2>19{exit}' cron > new_file
+                                       awk '$2 >= 9 && $2 <= 18' cron
+                                       cat cron | awk '{if (($2 >= 10)  && ($2 <= 19 n++)) print $0}'
+
+10) sort the file in alphabate -> ls -1 | sort
+
+11) count the total file in an directory ->  ls Directory | wc -l
+
+12) move file from one directory to another directory -> mv /home/ankur/Desktop/Ankur/file_name /home/ankur/Desktop/linux
+
+13) give mysql permission any file -> chown mysql. file name
+
+14) insert the line using awk -> cat text | awk '{ print "http://192.168.24.149:9004", $1 }'
+
+15) ignore the case and print -> cat text | awk 'IGNORECASE = 1;/^ankur/;'
+
+16) indexer location ->  cd /etc/ sphinx/web_porting
+
+17) file split -> zcat file_name | split -l 500000 -a 6 -d - files
+
+    e.g: zcat tbl_fixedposition_pincodewise_bid_ahm.txt.gz | split -l 500000 -a 6 -d - files
+
+18) directory permission -> chown -R web_backup. remote
+
+******************************************************to check diskspace****************************
+
+To check Diskspace
+
+Login
+df -hT
+cd /home/ (to go in home directory)
+ll -lrth
+du -hsc ( to view size of particiular file) *( to view size of all file)
+cd /opt/sysmon/
+
+sudo -i
+du -hsc *
+cd /opt/sysmon/
+rm -rfd f1 f2 ... fn (unwanted files in / storage)
+optional : du -hsc | grep G
+
+To get reload df -hT in givin time.
+
+watch -n2 df -hT
+
+2 = sec.
+
+To search all 1G files use ----->>>find /var/lib/SQL/mysql -type f -size +1G | xargs du -hsc | sort -nr
+
+To do manual diskspace
+Login 0 123
+cd /home/sachin
+cd /script/
+ll | grep disk
+cd manual disk/
+ll
+history | grep manual_diskspace.sh
+
+sh manual_diskspace.sh
+
+check diskspace on 64 64
+login 64 64
+sudo mysql
+mysql - select * from db_diskspace.tbl_diskspace where serv_ip like 'server_ip'\G
+
+EXAMPLE:mysql> select * from db_diskspace.tbl_diskspace where serv_ip='172.29.81.47';
+
+########################################################################################################################################################################################################
+
+##########################
+#     Mysql             #
+#########################
+
+{Check database on mysql:-
+
+                        show database;
+                        use database;
+                        show table like "%tbl_name%";
+
+    or                  show tables from db_name like "%tbl_%";}
+
+1. to creat database in mysql = CREATE DATABASE "db_name";
+
+2.to change database(if database is not given query) = use "db_name";
+
+3. mysql query for checking  table on server mysqlcheck =
+                    mysql> select table_schema,table_name from information_schema.tables  where index_length is NULL or data_length is NULL;
+
+4.check status of table = check table db_name.tbl_name;
+
+5. repair table = repair table db_name.tbl_name;
+
+6. see database= show databases;
+
+{7. see tables under database = show tables;}
+
+8. stop mysql =
+        sudo mysqladmin flush-tables && sudo mysqladmin flush-tables && sudo mysqladmin flush-tables && sudo mysqladmin flush-tables && sudo /etc/init.d/mysql status
+or
+        sudo mysqladmin flush-tables && sudo mysqladmin flush-tables && sudo mysqladmin flush-tables && sudo mysqladmin flush-tables && sudo /etc/init.d/mysqld status
+or
+        date && sudo mysqladmin flush-tables && sudo mysqladmin flush-tables && sudo mysqladmin flush-tables && sudo mysqladmin flush-tables && sudo service mysqld status
+
+##########################
+                        #
+mysql access           #
+                      #
+######################
+To Give Select access
+
+
+Login
+sudo
+mysql -> show grants for username@system_ip;
+{grant all access
+ GRANT ALL PRIVILEGES ON *.* TO 'user'@'ip_addr';   ==============*.* refer to all database and tables
+}
+
+
+mysql ->#grant PRIVILEGES on DBNAME.TABLENAME to 'USERNAME'@'USERIPADDR' identified by 'PASSWORD';
+
+mysql -> flush privileges;
+
+
+check access on server {if don't know the user}
+
+mysql ->  select user, host from mysql.user where host like 'ipaddr';
+
+
+Command to Remove access in mysql
+
+revoke all privileges on db_team.* from hostname@ip; flush privileges;
+
+
+- To remove a user completely
+
+# drop user 'user'@'ipaddr';
+
+EXAMPLE:
+
+####################
+FOR FULL ACCESS :  #
+####################
+GRANT CREATE,DROP,LOCK TABLES,REFERENCES,EVENT,ALTER,DELETE,INDEX,INSERT,SELECT,UPDATE,CREATE TEMPORARY TABLES,TRIGGER,CREATE VIEW,SHOW VIEW,ALTER ROUTINE,CREATE ROUTINE,EXECUTE ON Database_name.* TO 'mahendras '@'172.29.106.163' IDENTIFIED BY 'mahendras@123';flush privileges;
+
+mysql> select user, host from mysql.user where user like '%mahendr%';
++-----------+----------------+
+| user      | host           |
++-----------+----------------+
+| mahendras | 172.29.106.163 |
+| mahendra  | 172.29.132.155 |
+| mahendra  | 172.29.132.156 |
+| mahendra  | 172.29.138.156 |
+| mahendras | 172.29.64.64   |
++-----------+----------------+
+5 rows in set (0.01 sec)
+
+mysql> show grants for mahendras@172.29.106.163;
++--------------------------------------------------------------------------------------------------------------------------------+
+| Grants for mahendras@172.29.106.163                                                                                            |
++--------------------------------------------------------------------------------------------------------------------------------+
+| GRANT ALL PRIVILEGES ON *.* TO 'mahendras'@'172.29.106.163' IDENTIFIED BY PASSWORD '*3DABA624652D8BDB50AF0E896A3AD213B48B571E' |
++--------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.01 sec)
+
+
+select user,host,authentication_string from mysql.user where user like '%arnavj%';
+
+
+
+
+##########################################################################################################################################################################################
+#################################
+#                               #
+# table transfer                #
+#################################
+
+Table Transfer
+Login
+df -hT   ( to check space)
+Take dump------sudo mysqldump database_name table_name > /tmp/table_name.sql
+
+port:3307
+sudo mysqldump  --socket=/var/lib/SQL_3307/mysqld1_3307.sock database_name table_name > /tmp/table_name.sql
+
+ll -lrth
+scp /tmp/table_name.sql Username@destination ip:/tmp/
+
+login to destination server
+
+Restored table--sudo mysql database_name < table_name.sql
+
+sudo mysql (--socket=/var/lib/SQL/mysql/mysql.sock) database_name < table_name  --- if socket is given)
+
+ex: mysql --socket=/var/lib/SQL/MYSQL_3307/mysql/mysql_3307.sock db_finance <  tbl_companymaster_finance.sql
+
+
+Check count
+sudo - mysql ( Socket) if socket is given
+mysql> select count(1) from database_name.table_name;
+
+ex:[root@11-149-IDC tmp]# for i in `cat sr`;do mysql --socket=/var/lib/SQL_3307/mysql/mysql_3307.sock -e "select count(1) from search_input.${i};";done
+------------------------------------------
+#####TABLE TRANSFER##### 
+--------------------------------------------------
+dump 
+for i in `cat table.txt`;do  echo $i ;sudo  mysqldump test $i | gzip -fv > $i.sql.gz;done
+for i in `cat table.txt`;do  echo $i ;sudo  mysqldump allocation $i > $i.sql;done
+
+sudo mysqldump --set-gtid-purged=OFF db_monetization tbl_docid_monetization_main_summary_202210 | gzip -fv > tbl_docid_monetization_main_summary_202210.sql.gz
+
+restore command
+for i in `cat table.txt`;do echo $i ; gunzip -fv $i.sql.gz; sudo mysql  < $i.sql;gzip -fv $i.sql;done
+counts
+for i in `cat table.txt`;do echo $i ; sudo mysql -e "select count(1) from test.${i};";done
+
+TO get count directly from root
+
+mysql -e "select count(1) from database_name.Table_name;"
+
+To find socket
+ps -aux | grep mysql
+ps -aux | grep -i mysql | grep -i  (ip) --color
+
+Check database on mysql:-
+                        show database;
+                        show tables from datbname like "%tbl_%";
+
+Use Command to zip the file
+
+ #cd /tmp && gzip -f /tmp/table_name.sql
+
+Use command to unzip the file
+
+cd/tmp && gunzip -f/tmt/table_name.sql.gz
+
+###################################################################### FOR CHANGING DB ENGINE####################################
+
+[root@17-196-IDC ~]# # db_jd_deductioninfo_remotecity
+[root@17-196-IDC ~]#
+[root@17-196-IDC ~]# #sed -i 's/InnoDB/MyISAM/g'
+[root@17-196-IDC ~]# cd /var/lib/SQL
+[root@17-196-IDC SQL]# sed -i 's/InnoDB/MyISAM/g' CallerSearchDet_archive_v2_31.sql
+[root@17-196-IDC SQL]# mysql db_jd_deductioninfo_remotecity < CallerSearchDet_archive_v2_31.sql
+
+######################################################################################################################################
+
+#########################
+#                       #
+# transfer of cron      #
+#########################
+
+1.login to source server
+sudo -i
+crontab -l {copy all require crons }
+scp scripts{if scripts is not available in destination server}
+
+2.login to destination server
+sudo -i
+crontab -e
+crontab -e and paste all require cron
+
+3.Go to scripts
+make requie changes to scripts
+
+************************************search and replaceglobaly  in vim**************************************************************
+
+:%s/****/*****/g
+
+********************************************************replication error************************************
+
+mysql socket -->  ps aux | grep -i mysql
+
+lock wait time out --stop slave;start slaves
+Duplicate entry    --skip
+Could not execute Update_Rows -- skip
+slave SQL thred retired tranaction== stop slave ; start slave
+Partial = skip
+Command for skip ==    stop slave ; set global sql_slave_skip_counter=1 ; start slave;
+
+
+For Replication Error ( time exceed)
+Login
+Sudo mysql
+( history | grep mysql)
+show slave status\G
+stop slave ; start slave;
+
+
+FOR REPLICATION ERROR  ( Duplicate Entry )
+Login
+sudo -i
+mysql
+{ Only if mysql permission denied (history | grep mysql
+Password ( from from above)   )) }}
+show slave status\G
+Check Last Error
+Ctrl R -- type skip
+Skip (write)
+press ESC
+Enter
+Show slave status\G
+\q ( to quite mysql)
+ctrl AD
+
+FOR SCREEN
+Login
+sudo -i
+Screen -ls
+screen -r (error id.skip or Screen name)
+
+[[ if skip option is not AVAILABLE  TO CREAT == screen -S skip]]
+[[ If screen is stop == sh slave_errors_skip_new.sh (error number)1032 ]]
+CTRL A and D ( Press CTRL A and realese and then press ctrl D)
+
+FOR Could not execute Update_rows
+Login
+sudo
+screen -ls
+screen -r (skip id)
+UPARROWS ( to check last command)
+CTRL A and than D
+
+##############################
+
+repair table(crash table) = 1.repair table db_name.tbl_name;
+                             2.stop slave;start slave;
+
+check table(to check which table is crashed) = check table db_name.tbl_name;
+
+##################################
+
+TO CHECK PROCESS LIST
+
+Login                           Login
+w                               w
+top -c                          top -c
+sudo mysql                      sudo mysql processlist( to check without entering in sudo/root)
+show processlist;
+\q (to quite mysql)
+Ctrl D
+Crtl D
+
+###################################
+
+TO CHECK MYSQL IS RUNNING OR NOT
+Ping IP
+Login
+sudo /etc/init.d/mysql status
+(If Showing Not In Command)
+sudo service mysqld status
+
+#######################################
+
+TO GIVE GRANT ACCESS TO STOPED SLAVE TIME ( Cant connect to server)
+
+Login
+sudo mysql
+show grants linux_monitor@172.29.64.48;
+GRANT PROCESS, REPLICATION CLIENT ON *.* TO 'linux_monitor'@'172.29.64.48' IDENTIFIED BY PASSWORD '*D8EBD58E6A3B342386100E3CC92D11743EE1289C';flush privileges;
+show grants linux_monitor@172.29.64.48;
+
+#########################################
+
+TO CHECK SLAVE SERVERS OF MASTER SERVER
+
+Login to server
+sudo -i
+mysql
+show slave hosts;
+
+**************************************************FIND COMMAND**********************************************************************************
+
+find /home/ -type f -size +1G| xargs du -hsc | sort -nr
+
+***************************************************run query(alter_table)****************************************************************************
+
+Login
+sudo -i
+Creat screen
+        sudo -i
+        mysql
+{If ask to hit in given database}
+screen
+sudo -i
+mysql - {use db_name}
+mysql - {run_query}
+
+{Check database on mysql:-
+    find /home/ -type f -size +1G| xargs du -hsc | sort -nr
+                    show database;
+                        show tables from datbname like "%tbl_%";}
+
+****************************************************to check activity on server*************************************************************
+find . -type f -mtime 20(time)
+
+############################################################################################################################
+
+How to check if port is in use in
+
+To check the listening ports and applications on Linux:
+
+1.Open a terminal application i.e. shell prompt.
+
+2.Run any one of the following command on Linux to see open ports:
+sudo lsof -i -P -n | grep LISTEN
+sudo netstat -tulpn | grep LISTEN
+sudo lsof -i:22 ## see a specific port such as 22 ##
+sudo nmap -sTU -O IP-address-Here
+
+3.For the latest version of Linux use the ss command. For example, ss -tulw
+
+##############################################################################################################################
+
+ [Reschedule an immediate check] 
+
+ 12.129_mlabs	Disk Check	DISK CRITICAL - free space: / 25 GB (5% inode=98%)
+
+unable to login to this server kindly check it
+
+Use -p 2222 for ssh login
+
+ ssh 192.168.12.129 -l keyur -p 2222
+
+####################################################################################################################################################################
+			     ###
+FOR CHECKING CRASHED TABLES: ###
+			     ###	
+################################
+check this  logs /tmp/crashed_tables.log
+12.218_messaging_FE_slaveDB	CRIT	MySQL Table Status	Crashed tables:justdial/tbl_retargetting_summary_details justdial/tbl_sms_cli_link
+
+mysql> check table justdial.tbl_retargetting_summary_details;
++-------------------------------------------+-------+----------+----------+
+| Table                                     | Op    | Msg_type | Msg_text |
++-------------------------------------------+-------+----------+----------+
+| justdial.tbl_retargetting_summary_details | check | status   | OK       |
++-------------------------------------------+-------+----------+----------+
+
+########################################################################################################################
+					      ##########
+How to check total process and NAGIOS CHECKS  ##########
+					      ##########
+########################################################
+[bhavesh@64-64-US ~]$ /usr/lib64/nagios/plugins/check_procs -w 1000 -c 1200
+PROCS CRITICAL: 1235 processes
+[bhavesh@64-64-US ~]$
+[bhavesh@64-64-US ~]$ ps aux | grep -c php
+155
+[bhavesh@64-64-US ~]$ ps aux | grep -c http
+59
+[bhavesh@64-64-US ~]$ ps aux | grep -c nginx
+1
+
+CMND :  cat /etc/nagios/nrpe.cfg  | grep -i "check we want"
+
+[root@41-151-IDC ~]# cat /etc/nagios/nrpe.cfg  | grep -i proc
+
+# The name of the file in which the NRPE daemon should write it's process ID
+# COMMAND ARGUMENT PROCESSING
+# This specifies how many children processes may be spawned at any one
+command[check_zombie_procs]=/usr/lib64/nagios/plugins/check_procs -w 5 -c 10 -s Z
+command[check_total_procs]=/usr/lib64/nagios/plugins/check_procs -w 150 -c 200
+### PROCESSES ###
+#command[check_all_procs]=/usr/lib64/nagios/plugins/custom_check_procs
+#command[check_procs]=/usr/lib64/nagios/plugins/check_procs $ARG1$
+
+###################################################################################################
+
+[2:29 PM, 8/12/2020] Ankur Bro JD Team: curl "http://192.168.12.234:999/api2.php?ip=172.29.50.84"
+[2:29 PM, 8/12/2020] Ankur Bro JD Team: run this command on terminal
+[2:30 PM, 8/12/2020] Ankur Bro JD Team: only mention different-different ip's
+
+######################################################################################################
+
+PORT TABLE TRANSFER
+
+mysql> show global variables like 'port';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| port          | 3307  |
++---------------+-------+
+
+[root@12-50-IDC bhavesh]# for i in `cat rahul_1609.txt`;do echo $i; mysql --socket=/var/lib/SQL_3307/mysql/mysql.sock dbteam_temp < $i;done
+
+screen -DDR rahul_1609    #####(-D -RR: It do whatever is needed to get a screen session.)######
+
+##########################################################################################################################################################
+
+zcat /var/log/nginx/graph.access.log-202004301545 | grep 'HTTP/1.1" 504'
+
+##############################################################################################  MONITORING PAGES  ##################################################
+1.nginx monitiring page -> http://192.168.12.234:999/new_nginx.html
+
+2.webporting_slave_status -> http://192.168.12.234:999/webporting_slave_status_qq.php
+
+3.new website (load check) -> http://192.168.12.234:999/new_website.html
+
+4.slave lag status -> http://192.168.12.234:999/slave_lag/
+
+5.website_cent page -> http://192.168.12.234:999/website_cent.html
+
+6.memory used status page -> http://172.29.64.64/~sachinthore/final_report_100.html
+
+7.jadoo nginx status page -> http://192.168.12.234:999/jadoo_nginx.html
+
+8.php status page -> http://192.168.7.109:8000/php_status?html&full
+
+9.check mk -> http://172.29.0.123/check_mk/index.py?start_url=%2Fcheck_mk%2Fdashboard.py
+            http://10.0.0.123/check_mk/index.py?start_url=%2Fcheck_mk%2Fdashboard.py
+            http://192.168.11.123/check_mk/index.py?start_url=%2Fcheck_mk%2Fview.py%3Fview_name%3Dallservices%26service%3D172.29.8.101%26site%3D
+            http://192.168.11.123/check_mk/index.py?start_url=%2Fcheck_mk%2Fdashboard.py
+
+10.Nagios page -> http://172.29.0.123/nagios/
+               http://192.168.12.78/nagios/
+
+11.disk space page -> http://172.29.64.64/~sachinthore/diskspace/diskspace.php?param=
+
+12.jenkins -> http://192.168.12.250:8080/login?from=%2F
+
+13.flag status page -> http://172.29.64.48:9000/flagstatus.php
+
+14.us website page -> http://172.29.64.48:9000/uswebsite_nginx_status.php
+
+15.flag status page -> http://192.168.12.234:999/flagstatus.php
+
+16.IT Team list all over india -> http://172.29.50.100/itteam.htm
+
+17.shift schedule page -> http://beta.justdial.com/shift/schedule.php?date=latest
+
+18.F5 page -> https://192.168.20.253/tmui/login.jsp?msgcode=2&
+
+19.Linux wiki -> http://172.29.64.48/mysql-grants/
+
+20.sphinx count -> http://172.29.64.48:9000/sphinx_count.html
+
+21. http://beta.justdial.com/shift/schedule.php?date=latest  ..........passwd:dj33_vk55_MNT
+
+      http://beta.justdial.com/shift2/latest----------username - development
+                                                      password - dj33_vk55_MNT
+							passwd:lBYxltGQ95VAs
+22. http://192.168.12.234:999/inv/pages/index.html
+
+23.  http://172.29.50.100/itteam.htm
+
+24.  http://192.168.12.64/4xx_5xx_logs/
+			username - development
+		          passwd:lBYxltGQ95VAs
+
+#####################   alias thing ---   alias h='/bin/bash login-with-hemanth.sh'   ---   #############################                                             
+######################################24.101 to 24.107 jd social servers ##################################
+
+87.35 --------psswd is JD@847464
+
+17.144  rhony and jayendra 
+
+curl "http://192.168.12.234:999/api2.php?ip=172.29.50.84"
+
+OMNI NAGIOS IP : http://192.168.23.170/nagios/
+
+########################
+
+VPN :  hemanths
+pwd : Just@1234
+
+######################################################################################################################
+		####
+SUDO ACCESS	####
+		####
+####################
+
+Create User with Sudo Access   : sudo adduser -G wheel hemanth 
+
+Assign Sudo Privileges to User : sudo usermod -a -G wheel hemanth
+
+Remove Sudo Privileges from User : sudo gpasswd -d tecadmin wheel 
+
+#######################################################################
+vim /etc/sudoers
+
+hemanth  ALL = NOPASSWD: ALL
+
+########################################################################################################################################################
+
+[bhavesh@38-27-IDC ~]$ sudo mysql -e "show slave status\G" | grep -i Seconds_Behind_Master
+        Seconds_Behind_Master: 0
+
+##########################################################################################################################################################
+CITY CODES
+
+0  --- MUMBAI		mum
+8  --- DELHI		del
+16 --- KOLKATA         kol
+26 --- BANGALORE	ban
+32 --- CHENNAI		che
+40 --- PUNE		pun
+50 --- HYDERABAD       hyd
+35 --- AHMEDABAD	ahm
+17 --- REMOTECITY	rem
+
+17-171-remotecity
+39-171-mumbai
+43-171-delhi 
+47-171-kolkata
+44-171-bangalore
+45-171-chennai
+48-171-pune
+46-171-hyderabad
+35-171-Ahmedabad
+
+###########################################################################################################################
+
+[bhavesh@12-35-IDC ~]$ sudo mysqlslavetrx --gtid-set=df3edf68-0478-11e9-8005-9840bb6716bf:283678-283693 --slaves=repl:password@192.168.12.36:3306,
+repl:password@192.168.12.37:3306,repl:password@192.168.12.38:3306,repl:password@192.168.12.16:3306,repl:password@192.168.13.20:3306,
+repl:password@192.168.11.179:3306
+
+#############################################################################################################################
+
+sudo chage -M 999 hemanth 
+current  disk space on 192.168.17.103 ,PFB.
+
+Filesystem                               Size     Used   Avail   Use%       Mounted on
+/dev/mapper/mpathd              4.0T     3.8T    57G   99%     /var/lib/SQL_3311
+
+1st login with other user and use : sudo chage -M 999 hemanth
+
+###############################################################################################################################
+ADD nagios check..      #
+#########################
+
+step1 
+42.172
+copy nrpe.cfg nrpe plugins
+
+source server
+scp -r /etc/nagios/nrpe.cfg /etc/xinetd.d/nrpe /usr/lib64/nagios/plugins user@ip:cd /et	nag	
+
+destination
+ 42.173
+cp nrpe.cfg /etc/nagios/ 
+cp nrpe /etc/xinetd.d/
+cp plugins /usr/lib64/nagios/ 
+
+:%s/29.132/29.135/g
+
+step 2
+
+nagios sevrer
+
+/etc/nagios/objects
+
+cp 192.168.42.172.cfg 192.168.42.173.cfg
+
+flight check
+ 
+nagios -v /etc/nagios/nagios.cfg 
+
+service nagios reload
+##########################################################################################
+systemctl restart nagios 
+  511  [2021-10-07] [14:25:51] systemctl status nagios
+  524  [2021-10-07] [14:25:04] systemctl status nagios
+
+##################################################
+
+SPECIAL CASES FOR RELOAD SERVICE.......   ########
+
+ service xinetd status				##
+ service xinetd restart				##
+
+################################################################################################################################################
+		  #####
+COMMENTING CHECK  #####
+		  #####
+#######################
+
+first  we go to  nagios either 12.78 or 11.123
+
+STEP 1: cd /etc/nagios/objects/
+
+STEP 2: grep -Ril "39.53" .
+
+
+We get config file Of that ip and Vim that
+
+step 3: vim 192.168.xx.xx.cfg
+
+ Search check, Which u want to Comment
+
+STEP 4: Then flight check
+
+nagios -v /etc/nagios/nagios.cfg
+
+STEP 5:
+
+service nagios status
+service nagios restart
+
+###################################################################################################################################################
+
+:%s/29.132/29.135/g
+
+[bhavesh@29-132-IDC ~]$ sudo scp -r /etc/nagios/nrpe.cfg  /usr/lib64/nagios/plugins/ /etc/xinetd.d/nrpe bhavesh@192.168.29.134:
+[bhavesh@29-134-IDC ~]$ sudo cp nrpe.cfg /etc/nagios/
+[bhavesh@29-134-IDC ~]$ sudo cp -r  plugins/ /usr/lib64/nagios/
+[bhavesh@29-134-IDC ~]$ sudo cp nrpe /etc/xinetd.d/
+
+[root@12-78-IDC objects]# nagios -v /etc/nagios/nagios.cfg
+[root@12-78-IDC objects]# service nagios reload
+
+##################################################################################################################################################
+
+sudo yum update -y
+sudo reboot
+
+#######################################################################################################################################################
+
+MAIL SUB:Re: Telephony Server's to be rebooted - PUNE
+
+922  history 
+  923  ip r l
+  924  LINE="###############################################################################################################";sudo cat /proc/sys/kernel/hostname > /root/details_`date +%d%b%Y` ; sudo echo $LINE >> /root/details_`date +%d%b%Y` ; sudo /sbin/ifconfig -a >> /root/details_`date +%d%b%Y` ; sudo echo $LINE >> /root/details_`date +%d%b%Y`;sudo cat /proc/net/bonding/bond0 >> /root/details_`date +%d%b%Y`;sudo echo $LINE >> /root/details_`date +%d%b%Y` ;sudo  dmidecode -t system >> /root/details_`date +%d%b%Y` ; sudo echo $LINE >> /root/details_`date +%d%b%Y` ; sudo df -h >> /root/details_`date +%d%b%Y` ; sudo echo $LINE >> /root/details_`date +%d%b%Y` ; sudo free -g >> /root/details_`date +%d%b%Y` ;sudo  echo $LINE >> /root/details_`date +%d%b%Y` ;sudo  netstat -ntlp >> /root/details_`date +%d%b%Y` ;sudo  echo $LINE >> /root/details_`date +%d%b%Y` ; DOCK_CONT=`sudo docker ps -q`; for i in $DOCK_CONT; do echo "docker ports : " >> /root/details_`date +%d%b%Y`; sudo docker port $i >> /root/details_`date +%d%b%Y`; done; sudo  echo $LINE >> /root/details_`date +%d%b%Y` ; screen -ls >> /root/details_`date +%d%b%Y` ; sudo echo $LINE >> /root/details_`date +%d%b%Y` ; sudo multipath -ll >> /root/details_`date +%d%b%Y` ;sudo echo $LINE >> /root/details_`date +%d%b%Y` ;cat /sys/class/fc_host/*/port_name >> /root/details_`date +%d%b%Y`;  sudo echo $LINE >> /root/details_`date +%d%b%Y` ;sudo cat /etc/fstab >> /root/details_`date +%d%b%Y` ;sudo  echo $LINE >> /root/details_`date +%d%b%Y` ; sudo mysqld_multi report >> /root/details_`date +%d%b%Y` ;sudo  echo $LINE >> /root/details_`date +%d%b%Y` ; sudo ps auxf >> /root/details_`date +%d%b%Y` ;sudo  echo $LINE >> /root/details_`date +%d%b%Y` ;sudo mount >> /root/details_`date +%d%b%Y` ; echo "history from root before activity" >> /root/details_history_`date +%d%b%Y`; sudo echo $LINE >> /root/details_history_`date +%d%b%Y`; history >> /root/details_history_`date +%d%b%Y`;
+  925  ll -lrth | tail
+  926  cat details_05Mar2022
+  927  history
+  928  netstat -ntpl 
+  929  service smb status ; service asterisk status ; service cups  status ; service  rpcbind  status ; service httpd status
+  930  service smb stop ; service asterisk stop ; service cups  stop ; service  rpcbind  stop ; service httpd stop
+  931  service smb status ; service asterisk status ; service cups  status ; service  rpcbind  status ; service httpd status
+  932  netstat -ntpl 
+  933  df -hT
+  934  umount /8tb/
+  935  df -hT
+  936  ip r l
+
+####################################################################################################################################################################################
+
+for checking counts at a time in .txt file
+
+for 17.107------3307 port
+
+date;for i in `cat tbl.txt` ; do echo $i ;sudo mysql --socket=/var/lib/SQL_3307/mysql/mysql_server2.sock -Bse  "select count(1) from db_processing_earning_completed.$i;";done;date;
+
+for 64.44----3306 port
+
+date;for i in `cat tbl.txt` ; do echo $i ;sudo mysql  -u root -pMysqldb@pass -e  "select count(1) from db_processing_earning.$i;";done;date;
+
+############################################################
+
+FOR TAKING DUMP OF TABLES IN A LOOP FROM TXT FILE
+
+
+
+
+
+for i in `cat tbl.txt` ; do echo $i ;  sudo mysqldump -u root -pMysqldb@pass db_processing_earning $i | gzip -fv > $i.sql.gz ; done
+
+###############################################################
+
+FOR RESTORING IN A LOOP.......AFTER UN-ZIPPING TABLES
+
+[root@17-105-IDC jk_sir_12032022_ip_64.181]# for i in  *.sql ; do  echo $i ; sudo mysql  --socket=/var/lib/SQL_3307/mysql/mysql_server2.sock db_processing_earning_completed  < $i ; done
+
+#################################################################
+
+SIMPLE RESTORING
+
+for i in *.sql ; do echo $i ;done
+  for i in *.sql ; do echo $i ;done |wc -l
+   for i in *.sql ; do echo $i ; sudo mysql db_split < $i ; done
+
+for i in `cat tbl.txt` ; do echo $i ;done
+
+#################################################################################################################################################################################
+
+DUMPING AND ZIPPING AT A SAME TIME
+
+mysqldump sms_email_sending tbl_common_intimations_archive_02022021 | gzip -fv  > /tmp/tbl_common_intimations_archive_02022021.sql.gz
+
+###################################################################################################################################
+
+F5 PAGE LOGIN FOR 8.253 AND 20.253
+
+PAGE:https://192.168.8.253/tmui/login.jsp
+
+USER:justdial
+PASSWD: Justd!aldev0psadmin
+
+###########################################################################################################################################################
+
+show grants for husains@172.29.5.241;
+
+CREATE USER husains@172.29.5.241 IDENTIFIED BY 'PASSWORD';
+
+select user,host from mysql.user where Host like "%192.168.39.85%";
+
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON `dbteam_temp`.* TO 'husains'@'172.29.5.241';flush privileges;
+
+GRANT SELECT ON *.* TO 'husains'@'172.29.5.241';flush privileges;
+
+
+CHANGING PASSWORD IN MYSQL:
+
+FOR MYSQL VERSION 5.7 AND ABOVE
+
+ALTER USER 'husains'@'172.29.5.241' IDENTIFIED BY 'PASSWORD';FLUSH PRIVILEGES;
+
+FOR MYSQL VERSION 5.6.22
+
+SET PASSWORD FOR 'husains'@'172.29.5.241' = PASSWORD('PASSWORD');FLUSH PRIVILEGES;
+
+
+FOR REPLICATE THE ACCESS WHICH ALREADY PRESENT IN SERVER:
+
+ wget -O /tmp/replicate_mysql5.6_5.7_8.0_grants.sh http://172.29.0.123/download/replicate_mysql5.6_5.7_8.0_grants.sh && sudo sh /tmp/replicate_mysql5.6_5.7_8.0_grants.sh <OLD IP WHICH HAS ACCESS> <NEW IP> <PORT_OF_SERVER>
+
+EXAMPLE:
+ wget -O /tmp/replicate_mysql5.6_5.7_8.0_grants.sh http://172.29.0.123/download/replicate_mysql5.6_5.7_8.0_grants.sh && sudo sh /tmp/replicate_mysql5.6_5.7_8.0_grants.sh 172.29.87.237 10.10.55.112 mysql --port=3306 --socket=/var/lib/SQL/mysql_6_180/mysql.sock
+
+#############################################################################################################################################################
+
+hemanth@justdial-OptiPlex-9020:~$ echo $'***************************\n***************************\n***************************'
+***************************
+***************************
+***************************
+
+############################################################################################################################################################
+
+STRONG PASSWORD's: MyDog+MyCat=8legs and Mydog+Mycat=8legs and ju5tD1@lcr0mA
+
+##################################################################################################################
+Mysql
+
+How to Install MySQL 5.7 on Linux CentOS
+
+Step 1 - Add New Repository
+
+yum localinstall https://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
+
+Step 2 - Install MySQL 5.7
+
+yum -y install mysql-community-server
+
+Step 3 - Start MySQL and Enable Start at Boot Time
+
+systemctl start mysqld
+systemctl enable mysqld
+
+Step 4 - Configure the MySQL Root Password
+
+grep 'temporary' /var/log/mysqld.log
+
+mysql -u root -p
+TYPE DEFAULT PASSWORD
+
+change user pass:
+
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Prashanth@123';
+
+flush privileges;
+
+How to Configure MySQL Master-Slave Replication on CentOS 7
+
+Master IP =192.168.1.106
+slave IP    = 192.168.1.107
+
+Configure the Master Server #
+
+Set the MySQL server to listen on the private IP .
+Set a unique server ID.
+Enable the binary logging.
+
+open the MySQL configuration file and add the following lines in the [mysqld] section:
+
+[mysqld]
+
+bind-address = 192.168.1.106
+server-id = 1106
+log_bin = mysql-bin
+
+then restart mysqld
+
+systemctl restart mysqld
+
+create a new replication user
+
+create the replica user and grant the REPLICATION SLAVE privilege to the user:
+
+mysql> CREATE USER 'repl'@'192.168.1.107' IDENTIFIED BY 'Prashanth@123';
+Query OK, 0 rows affected (1.53 sec)
+
+mysql> 
+
+mysql> GRANT REPLICATION SLAVE ON . TO 'repl'@'192.168.1.107';
+Query OK, 0 rows affected (1.48 sec)
+
+mysql>
+
+mysql> SHOW MASTER STATUS\G
+********* 1. row *********
+             File: mysql-bin.000001
+         Position: 619
+     Binlog_Do_DB: 
+ Binlog_Ignore_DB: 
+Executed_Gtid_Set: 
+1 row in set (0.00 sec)
+
+mysql> 
+
+Take note of file name and positin   File: mysql-bin.000001
+			     	            	 Position: 619
+			   
+Configure the Slave Server #
+
+Like for the master server above, we’ll make the following changes to the slave server:
+
+Set the MySQL server to listen on the private IP
+Set a unique server ID
+Enable the binary logging
+
+vim /etc/my.cnf
+
+[mysqld]
+
+bind-address = 192.168.1.107
+server-id = 1107
+log_bin = mysql-bin
+
+then restart mysqld
+
+systemctl restart mysqld
+
+then
+go to mysql
+
+First, stop the slave threads:
+STOP SLAVE;
+
+then execute below  and make sure of ip and pass and log_pos and log_file
+
+mysql> CHANGE MASTER TO
+    -> MASTER_HOST='192.168.1.106',
+    -> MASTER_USER='repl',
+    -> MASTER_PASSWORD='Prashanth@123',
+    -> MASTER_LOG_FILE='mysql-bin.000001',
+    -> MASTER_LOG_POS=619;
+Query OK, 0 rows affected, 2 warnings (21.59 sec)
+
+mysql> START SLAVE;
+
+###################################################################################################
+
+
+
+
+##################################
+##################Sandbox Creation for New User####################
+#############################################################
+March 5, 2013 by karan
+
+NOTE: Username should be in small letter and including both first name and last name without space.
+
+New Process….
+
+1) Login to Server 172.29.64.64
+
+2) Run the below mentioned Script created by Nilkanth Sir
+
+sh /scripts/nss_mysql_user_add.sh <UserName>
+
+3) Give Username as argument in the Script , just run the script and give the username
+
+no manual queries required
+
+Example
+
+sh /scripts/nss_mysql_user_add.sh XYZ
+
+Then follow Step 7 to Step 9 from   OLD PROCESS……..
+
+ 
+
+OLD PROCESS……..
+
+1) Login to server 172.29.64.64
+
+2) Check the user_id,uid and gid fields in the tables nss_mysql.user using the belwo command in mysql
+
+    —> select user_id,uid,gid from nss_mysql.user order by user_id;
+    —> select user_id,uid,gid from nss_mysql.user order by uid;
+    —> select user_id,uid,gid from nss_mysql.user order by gid;
+
+    NOTE: If the last user_id,uid and gid is 742,5258,5258 respectively then value to be used for the new user(sandbox) will be 743,5259,5259
+
+3) Insert user details in nss_mysql.user table using the below command
+
+    —> insert into nss_mysql.user(user_id,user_name,realname,password,status,uid,gid,homedir) value(“742“,”vinaydesai“,”vinaydesai“,ENCRYPT(“justdial”),”A”,”5258“,”5258“,”/home/vinaydesai“);
+
+4) Insert user details in nss_mysql.groups table using the below command
+
+    —> insert into nss_mysql.groups(group_id,group_name,gid) value(“742“,”vinaydesai”,”5258“);
+
+5) Insert user details in nss_mysql.grouplist table using the below command
+
+    —> insert into nss_mysql.grouplist(gid,username) value(“5258“,”vinaydesai“);
+
+    NOTE: The fields marked in bold in points 3,4 and 5 will change for different users
+
+6) Login on 172.29.64.64 with the new userid created from a new terminal; this will create the necessary directories of the user.
+
+        sandbox
+        Make soft-link to htdocs exp (  ln -s sandbox htdocs )
+
+7) Now make the necessary entries in /httpdjail/etc/httpd/vhost/jdsoftware.conf i.e.
+
+    <VirtualHost *>
+    DocumentRoot /home/vinaydesai/htdocs/
+    ServerName   vinaydesai.jdsoftware.com
+    <Directory /home/vinaydesai/htdocs/>
+    Options -Indexes Followsymlinks
+    AllowOverride   All
+    Order   Allow,Deny
+    Allow from all
+    </Directory>
+    ErrorLog    logs/vinaydesai.jdsoftware.com_error.log
+    CustomLog   logs/vinaydesai.jdsoftware.com_access.log common
+    </VirtualHost>
+
+    Note : Do the same on standby server 172.29.64.55 server
+
+8.) Post making the required changes restart apache gracefully
+
+    Syntax check
+    —> chroot /httpdjail /usr/sbin/httpd -t
+
+    Graceful apache resatrt
+    —> /etc/init.d/httpd restart   –> Don’t try to use graceful command, chances of stuck apache connection.
+
+9) Create the samba userid for the new user and give the standard password  i.e justdial
+
+    —> smbpasswd -a vinaydesai
+
+    Note : Do the same on standby server 172.29.64.55 server
+
+     
+
+    insert into nss_mysql.user(user_id,user_name,realname,password,status,uid,gid,homedir) value(‘783′,’sunnytailor’,’sunnytailor’,ENCRYPT(‘justdial’),’A’,’5299′,’5299′,’/home/sunnytailor’);
+
+    =======================================================================================================================
+
+    NOTE : In case Request comes for blrsoftware(172.29.86.27) instead of jdsoftware (172.29.64.64), then do following modification in the Process
+
+    1> Replace  all IP 172.29.64.64 with 172.29.86.27
+
+    2> At Step 7 Replace Path /httpdjail/etc/httpd/vhost/jdsoftware.conf by /etc/httpd/vhost/blrsoftware.conf
+
+    3> At Step 7 Replace all jdsoftware by blrsoftware
+
+    4> Don’t do anything on 172.29.64.55
+
+    5> At Step 8 to check http syntax use “httpd -t” in place of “chroot /httpdjail /usr/sbin/httpd -t”
+
+    Rest all Process is same
+
+
+
+
+
+
+##########################
+########################Mongo Basic Commands################
+#########################
+Mongo Basic Commands
+Note: Run Below Commands from Admin database inside Mongo
+
+1. Connect to Mongo
+
+Command:
+mongo –host <Server-IP> –username <User-name> –password <Password> –authenticationDatabase <Authentication Database>
+
+Example:
+mongo –host 192.168.39.20 –username vishwa –password vishwa@123 –authenticationDatabase admin
+
+2. List Databases
+
+Command:
+show dbs
+
+3. Enter database or Create database
+
+Command:
+use <database-Name> (If database is not there it will be created)
+
+Example:
+use vishwa
+
+4. List collections (tables) in database
+
+Command:
+use <database-Name>
+show collections or show tables
+
+5. To confirm data is present in a table (After going inside database with “use” command)
+
+Command:
+db.<table-Name>.find().pretty().limit(1)
+
+Example:
+db.vishwa.find().pretty().limit(1)
+
+6. To See total count of data inside mongo collection.
+
+Command:
+db.<Table-Name>.count()
+
+Example:
+db.vishwa.count()
+
+7. To List All the Users
+
+Command:
+db.getUsers()
+
+8. To List particular user
+
+Command:
+db.getUser(‘<User-Name>’)
+
+9. To List particular User with Restrictions
+
+Command:
+db.getUser( “<User-Name>”, { showAuthenticationRestrictions: true} )
+
+10. To Create User
+
+i. Create User With Inbuilt Access (Accessible from All IPs)
+
+Command:
+db.createUser({user: “<User-Name>”, pwd: “<Password>”, roles: [ “<Access-Type>” ]})
+Example:
+db.createUser({user: “vishwa”, pwd: “c0mp_ap!”, roles: [ “readWriteAnyDatabase” ]})
+
+ii. Create User with access on Particular Databases (Accessible from All IPs)
+
+Command:
+db.createUser({user: “<User-Name>”, pwd: “<Password>”, roles:[{role: “<AccessType>”, db: “<Database-Name>”}]})
+
+Example:
+Single Database
+===============
+db.createUser({user: “vishwa”, pwd: “vishwa”, roles: [ { role: “readWrite”, db: “db_refer_earn” } ]
+
+Multiple Database
+=================
+db.createUser(
+{
+user: “vishwa”,
+pwd: “vishwa”,
+roles: [
+{ role: “read”, db: “reporting” },
+{ role: “read”, db: “products” },
+{ role: “read”, db: “sales” },
+{ role: “readWrite”, db: “accounts” }
+]
+}
+)
+
+iii. Create User With Access From limtited Servers (Accessible only from servers mentioned in Client Source)
+
+Command:
+db.createUser({user: “<User Name>”, pwd: “<Password>”, roles: [ “readWriteAnyDatabase” ], authenticationRestrictions:[{ clientSource: [“<ip1>”,”<ip2>”,”<ip3>”,…..,”<ipn>”]}]})
+
+Example:
+db.createUser({user: “vishwa”, pwd: “vishwa123”, roles: [ “readWriteAnyDatabase” ], authenticationRestrictions:[{ clientSource: [“192.168.39.71″,”192.168.39.72″,”192.168.17.222″,”192.168.17.223”]}]})
+
+11. Update Users
+Note: Updating User in Mongo is an update process i.e New data over-writes old data,
+therefore, Addition and deletion of particular access should be updated with all the access required and not just the data to be updated
+
+Command:
+
+db.updateUser( “<User-Name>”,
+{
+
+roles : [
+{ role : “<Access-Type>”, db : “<Databases>” }
+],
+authenticationRestrictions: [
+{ clientSource: [“<ip1>”,”<ip2>”,”<ip3>”,…..,”<ipn>”] }
+]
+
+} )
+
+Example:
+
+A User Created with Below commnds
+db.createUser({user: “vishwa”, pwd: “c0mp_ap!”, roles: [ “readWriteAnyDatabase” ], authenticationRestrictions:[{ clientSource: [“192.168.39.71″,”192.168.39.72″,”192.168.17.222″,”192.168.17.223”]}]})
+
+If Now we have to give access to 192.168.13.138 also then Run below Command
+
+db.updateUser( “vishwa”,
+{
+
+roles : [
+{ role : “readAnyDatabase”, db : “admin” }
+],
+authenticationRestrictions: [
+{ clientSource: [“192.168.39.71″,”192.168.39.72″,”192.168.17.222″,”192.168.17.223″,”192.168.13.138”] }
+]
+
+} )
+
+12. Update User Password
+
+Command:
+db.changeUserPassword(“<Username>”, “<New-Password>”)
+
+Example:
+db.changeUserPassword(“vishwa”, “vishwa123”)
+
+13. Delete User
+
+Command:
+db.dropUser(“<User-Name>”)
+
+Example:
+db.dropUser(“vishwa”)
+
+14. Execute mongo Commands from linux bash terminal
+
+Command:
+mongo –host <Server-IP> –username <User-name> –password <Password> –authenticationDatabase <Authentication Database> –eval “printjson(<mongo-command>)”
+
+Example:
+mongo –host 192.168.39.20 –username vishwa –password vishwa@123 –authenticationDatabase admin –eval “printjson(db.serverStatus())”
+
+mongo –quiet –host 192.168.39.20 –username vishwa –password vishwa@123 –authenticationDatabase admin –eval “printjson(db.getMongo().getDBNames())”
+
+
+
+
+##############################3
+
+Install Curator 8.0 on Centos 7.#############
+###################################
+
+Please follow given below guidelines while installing curator 8.xx on any servers.
+
+(Tested to be working on Centos 7.9 servers so far. )
+
+Tested to be working on :-  python3.9
+
+cd /opt
+
+sudo /usr/local/bin/virtualenv curator_venv
+
+cd curator_venv/
+
+source bin/activate
+
+pip –version
+
+python –version
+
+pip install –upgrade pip
+
+sudo chown -R pushkar. curator_venv/
+
+mv -v /opt/curator_venv/lib/python3.9/site-packages/ /opt/curator_venv/lib/python3.9/site-packages-disable/
+
+python3 -m ensurepip
+
+pip install –upgrade pip
+
+pip install -U elasticsearch-curator
+
+sudo rm -rf /opt/curator_venv/lib/python3.9/site-packages-disable
+
+In order to setup  the cron use entry similar to given below. ( ref  server :  192.168.42.191 )
+
+Please find below sample cron entry.
+
+### curator to delete old webservices index on ELK cluster (192.168.42.191 / 192.168.42.192 / 192.168.42.193) .
+30 01 * * * /opt/curator_venv/bin/curator –hosts “http://192.168.42.191:9200” –config /etc/curator/curator.yml /etc/curator/del_webservices_indices.yml > /dev/null 2>&1
+
+Regards
+Pushkar
+(27th Feb 2023)
+
+
+
+
+
+
+
+
+##################################################
+Configuring Nagios Server################################3
+###################################################33
+
+Installing and configuring Nagios Server
+
+ 
+
+* yum install nagios
+
+* Install apache & start the services
+
+*Create user for nagios
+
+* sudo htpasswd -c /etc/nagios/passwd username
+
+* Login in to Nagios Page
+
+*** http://xx.xx.xx.xx/nagios**
+
+ 
+
+    Go to vim/etc/nagios/nagios.cfg and comment the followingLines:-
+
+ 
+
+#cfg_file=/etc/nagios/objects/commands.cfg
+#cfg_file=/etc/nagios/objects/contacts.cfg
+#cfg_file=/etc/nagios/objects/timeperiods.cfg
+#cfg_file=/etc/nagios/objects/templates.cfg
+
+# Definitions for monitoring the local (Linux) host
+#cfg_file=/etc/nagios/objects/localhost.cfg
+
+# Definitions for monitoring a Windows machine
+#cfg_file=/etc/nagios/objects/windows.cfg
+
+# Definitions for monitoring a router/switch
+#cfg_file=/etc/nagios/objects/switch.cfg
+
+# Definitions for monitoring a network printer
+#cfg_file=/etc/nagios/objects/printer.cfg
+
+# You can also tell Nagios to process all config files (with a .cfg
+# extension) in a particular directory by using the cfg_dir
+
+and put this entry
+cfg_dir=/etc/nagios/objects/
+
+Kindly install xinet.d
+
+ 
+
+    yum install xinet.d
+
+ 
+
+ 
+
+    Put entry in /etc/xinet.d/nrpe { Refer from any existing nagios server }
+
+ 
+
+ 
+
+    reload xinetd
+
+ 
+
+Kindly Install gcc
+
+ 
+
+    yum install gcc*
+
+ 
+
+Install chek_mk Live status Package
+
+Check the Latest tarball from http://mathias-kettner.de/check_mk_download.html
+
+ 
+
+    wget the latest tar ball.
+
+ 
+
+ 
+
+    ./configure
+    make
+
+ 
+
+ 
+
+    make install
+
+ 
+
+Edit nagios.cfg file
+
+Check if broker module is enabled
+
+broker_module=/usr/local/lib/mk-livestatus/livestatus.o /var/spool/nagios/cmd/live
+
+If broker module is enabled then do a nagios restart and you should see  /var/spool/nagios/cmd/live  automatically created
+
+Edit Livestatus
+
+ 
+
+    vim /etc/xinetd.d/livestatus { Add the Nagios Server Ip Address in only from = xx.xx.xx.xx}
+
+ 
+
+ 
+
+    compare it with any existing nagios server and make neccessary changes
+
+ 
+
+Edit Command .cfg file
+
+vim /etc/nagios/objects/commands.cfg
+
+ 
+
+    Search for perfdata and comment the below lines
+
+ 
+
+# ‘process-host-perfdata’ command definition
+#define command{
+# command_name process-host-perfdata
+# command_line /usr/bin/printf “%b”
+“$LASTHOSTCHECK$\t$HOSTNAME$\t$HOSTSTATE$\t$HOSTATTEMPT$\t$HOSTSTATETYPE$\t$HOSTEXECUTIONTIME$\t$HOSTOUTPUT$\t$HOSTPERFDATA$\n”
+>> /var/nagios/host-perfdata.out
+# }
+#
+#
+## ‘process-service-perfdata’ command definition
+#define command{
+# command_name process-service-perfdata
+# command_line /usr/bin/printf “%b”
+“$LASTSERVICECHECK$\t$HOSTNAME$\t$SERVICEDESC$\t$SERVICESTATE$\t$SERVICEATTEMPT$\t$SERVICESTATETYPE$\t$SERVICEEXECUTIONTIME$\t$SERVICELATENCY$\t$SERVICEOUTPUT$\t$SERVICEPERFDATA$\n”
+>> /var/nagios/service-perfdata.out
+# }
+
+–> And add the below mentioned lines
+define command {
+command_name process-service-perfdata
+command_line /usr/bin/perl
+/usr/libexec/pnp4nagios/process_perfdata.pl
+}
+
+define command {
+command_name process-host-perfdata
+command_line /usr/bin/perl
+/usr/libexec/pnp4nagios/process_perfdata.pl -d HOSTPERFDATA
+}
+
+Edit nagios.cfg file
+
+ 
+
+    vim /etc/nagios/nagios.cfg
+
+ 
+
+Comment the below lines
+
+—>#host_perfdata_command=process-host-perfdata
+#service_perfdata_command=process-service-perfdata
+
+–>Add the below lines, if already present check if the lines are commented or not
+—>host_perfdata_file=/tmp/host-perfdata
+service_perfdata_file=/tmp/service-perfdata
+
+ONCE DONE DO A FLIGHT CHECK AND RESTART NAGIOS
+
+Add the Nagios server in check_mk
+
+sudo vim /etc/check_mk/multisite.d/sites.mk
+Add the below Entry’s
+
+Example –
+
+“amazon_Servers” : {
+“alias” : “amazon_Servers”,
+“socket”: “tcp:10.0.0.123:6557”,
+“url_prefix”: “/nagios/”,
+},
+
+For SMS_integration add the below lines in vim /etc/nagios/objects/commands.cfg & copy the scripts & sms files for any existing server.
+
+define command{
+command_name service_notify_with_smsgrp_manager
+command_line sudo sh /scripts/standard_sms_sending_script.sh -f /etc/nagios/smsgrp_files/smsgrp_manager -m ‘$NOTIFICATIONTYPE$: Service $SERVICEDESC$ on $HOSTNAME$ is $SERVICEOUTPUT$ Date:$LONGDATETIME$’
+}
+
+define command{
+command_name host_notify_with_smsgrp_manager
+command_line sudo sh /scripts/standard_sms_sending_script.sh -f /etc/nagios/smsgrp_files/smsgrp_manager -m ‘$NOTIFICATIONTYPE$: Host: $HOSTNAME$ is $HOSTSTATE$ Date:$LONGDATETIME$’
+}
+
+##############################################################################################################################################################
+
+
+
+
+
+
+How to install Redis and setup Cluster ?
+Recommend using CentOS 7. For production environments, replicating your data across at least 6 nodes is considered
+Before setting up the redis cluster please make ensure that below point is covered
+1. All servers must be in different chassis / clusters for maintaining redundancy 
+# Master slave strategy
+master                                                           slave
+192.168.xx.1 (chassis1)                   192.168.xx.2 (chassis2)
+192.168.xx.3 (chassis3)                  192.168.xx.4 (chassis4)
+192.168.xx.5 (chassis5)                  192.168.xx.6 (chassis6)
+2. Take identical storage on all servers for storing the data and mount on /var/lib/redis (min size 300GB depends upon requirements)
+3. Install redis-server version same on all nodes (yum install redis-VERSION.el7.remi.x86_64.rpm)
+4. Make necessary changes in /etc/redis.conf (for PRODUCTION = loglevel notice etc..)
+Make sure below parameters are set
+bind <IP Address>
+protected-mode yes
+port 6379
+daemonize no
+loglevel notice
+pidfile /var/run/redis_6379.pid
+logfile /var/log/redis/redis.log
+dir /var/lib/redis/
+cluster-enabled yes
+cluster-config-file nodes-6379.conf
+cluster-node-timeout 15000 #in milliseconds
+5. Add 6379 port in sysctl.conf reserved ports
+vim /etc/sysctl.conf
+net.ipv4.ip_local_reserved_ports=6379
+sysctl -p
+6. Redis log-rotation should be happening in daily
+7. if using docker then TIMESTAMPS should be set inside docker IST format
+8. Start redis service on all nodes
+9. Disable redis service ON BOOT on all nodes
+10. Confirm redis service running on all nodes ( use command -: redis-cli -h 192.168.xx.xx -p 6379 ping )
+# Launch and Configure Redis Master servers
+redis-cli –cluster create 1192.168.xx.1:6379 192.168.xx.3:6379 192.168.xx.5:6379
+# check cluster status
+redis-cli -h 1192.168.xx.1 -p 6379 cluster nodes
+# Add slave nodes into cluster as per master slave strategy steps 1
+Connect redis on master server
+redis-cli -h 192.168.xx.1 -p 6379
+192.168.xx.1:6379> cluster meet NEWIP/SLAVEIP PORT
+192.168.xx.1:6379> cluster nodes ( note-down master-server-node-id )
+192.168.xx.1:6379>exit
+Connect redis on slave server and issue below commands
+redis-cli -h 192.168.xx.2 -p 6379
+192.168.xx.2:6379>cluster replicate <master-server-node-id>
+Repeat the step for remaining new slave to adding
+# check cluster status and confirm all are done as expectations 
+redis-cli -h 1192.168.xx.1 -p 6379 cluster nodes
+
+
+
+
+
